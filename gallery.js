@@ -61,7 +61,7 @@ function onCloseModal() {
   modalImageGallery.src = "";
 }
 let currentIndex = 0;
-function swipe() {
+function swipeRight() {
   currentIndex += 1;
   if (galleryItems.length <= currentIndex) {
     currentIndex = 0;
@@ -69,7 +69,15 @@ function swipe() {
 
   modalImageGallery.src = galleryItems[currentIndex].original;
   modalImageGallery.alt = galleryItems[currentIndex].description;
-  modalImageGallery.dataset.index = currentIndex;
+}
+function swipeLeft() {
+  currentIndex -= 1;
+  if (galleryItems.length <= currentIndex) {
+    currentIndex < 0;
+  }
+
+  modalImageGallery.src = galleryItems[currentIndex].original;
+  modalImageGallery.alt = galleryItems[currentIndex].description;
 }
 
 function onKeyDown(e) {
@@ -77,9 +85,9 @@ function onKeyDown(e) {
     onCloseModal();
   }
   if (e.code === "ArrowRight") {
-    swipe();
+    swipeRight();
   }
   if (e.code === "ArrowLeft") {
-    swipe(-1);
+    swipeLeft(-1);
   }
 }
