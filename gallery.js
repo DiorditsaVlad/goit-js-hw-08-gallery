@@ -15,9 +15,8 @@ onOverlayGallery.addEventListener("click", onCloseModal);
 galleryList.insertAdjacentHTML("beforeend", cardsGalleryMade);
 
 function createMarkup(gallery) {
-  let indexOfImg = 0;
   return gallery
-    .map(({ preview, original, description }) => {
+    .map(({ preview, original, description }, index) => {
       return `
       <li class="gallery__item">
         <a
@@ -29,7 +28,7 @@ function createMarkup(gallery) {
             class="gallery__image"
             src="${preview}"
             data-source="${original}"
-            data-index="${(indexOfImg += 1)}"
+            data-index="${index}"
             alt="${description}"
           />
         </a>
@@ -53,6 +52,7 @@ function onOpenModal(img) {
   modalImageGallery.src = img.dataset.source;
   modalImageGallery.alt = img.alt;
   modalImageGallery.dataset.index = img.dataset.index;
+  currentIndex = Number(img.dataset.index);
 }
 
 function onCloseModal() {
@@ -60,17 +60,16 @@ function onCloseModal() {
   modal.classList.remove("is-open");
   modalImageGallery.src = "";
 }
-
-function swipe(count) {
-  const index = modalImageGallery.dataset.index;
-  const nextIndex = Number(index) + count;
-  const nextEl = document.querySelector(`[data-index="${nextIndex}"]`);
-  if (!nextEl) {
-    return;
+let currentIndex = 0;
+function swipe() {
+  currentIndex += 1;
+  if (galleryItems.length <= currentIndex) {
+    currentIndex = 0;
   }
-  modalImageGallery.src = nextEl.dataset.source;
-  modalImageGallery.alt = nextEl.alt;
-  modalImageGallery.dataset.index = nextEl.dataset.index;
+
+  modalImageGallery.src = galleryItems[currentIndex].original;
+  modalImageGallery.alt = galleryItems[currentIndex].description;
+  modalImageGallery.dataset.index = currentIndex;
 }
 
 function onKeyDown(e) {
@@ -78,7 +77,7 @@ function onKeyDown(e) {
     onCloseModal();
   }
   if (e.code === "ArrowRight") {
-    swipe(1);
+    swipe();
   }
   if (e.code === "ArrowLeft") {
     swipe(-1);
